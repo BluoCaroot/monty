@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <string.h>
-#include <fcntl.h>
-#include <errno.h>
 
+#define _POSIX_C_SOURCE 200809L
+#define  _GNU_SOURCE
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -51,7 +52,7 @@ typedef struct instruction_s
  */
 typedef struct info_s
 {
-	int lc, size;
+	int c, size;
 	char *opcode, **parsed;
 	FILE *fd;
 	void (*f)(stack_t **stack, unsigned int line_number);
@@ -59,8 +60,13 @@ typedef struct info_s
 } info_t;
 extern info_t info[];
 
-void parse(info_t *info); 
+stack_t *add_nodeint(stack_t **head, int n);
+void parse(stack_t **st, info_t *info); 
 void findcmd(info_t *info);
-void handle(stack_t *stack, info_t *info);
-void free_list(info_t *info);
+void handle(stack_t **stack, info_t *info);
+void freelist(info_t *info);
 void freeall(stack_t *stack, info_t *info);
+void _pall(stack_t **st, unsigned int line_number);
+void _push(stack_t **st, unsigned int line_number);
+char *strdup(const char *str);
+#endif

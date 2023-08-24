@@ -1,63 +1,93 @@
 #include "main.h"
+#define _POSIX_C_SOURCE 200809L
 /**
  * main - the start of the program
  * @argc: count of args
  * @argv: the args
  * Return: 1 on fail 0 on success
  */
-info_t = {{0, 0, NULL, NULL, NULL, NULL}};
+info_t info[] = {{0, 0, NULL, NULL, NULL, NULL}};
 int main(int argc, char **argv)
 {
-	int r;
 	size_t n = 0;
 	stack_t *st;
-
 
 	if (argc != 2)
 	{
 		fprintf(stderr, "USAGE: monty file\n");
-		return (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	info->fd = fopen(argv[1], "r");
 	if (!info->fd)
 	{
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
-		return (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	
-	while (r = getline(&info->opcode, &n, fd) != -1)
+	while (getline(&info->opcode, &n, info->fd) != -1)
 	{
 		info->c++;
-		parse(info)
-		if (!info->parsed || info->parsed[0] == '$')
+		parse(&st, info);
+	/*	if (!info-> parsed || !info->parsed[0] || info->parsed[0][0] == '$')
 			continue;
 		findcmd(info);
 		if (!info->f)
 		{
-			fprintf(stderr, "L%d: unknown instruction %s", info->c, info->parsed[0]);
+			fprintf(stderr, "L%d: unknown instruction %s\n", info->c, info->parsed[0]);
 			freeall(st, info);
-			return (EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
-		handle(st, info);
+		info->f(&st, info->c);
 		freelist(info);
-
-
+*/
+		printf("%s", info->opcode);
 	}
-	freeall(st, info);
+	printf("%d\n", info->c);
+	/*freeall(st, info);
+	*/return (EXIT_SUCCESS);
 }
 
-void parse(info_t *info)
+void parse(stack_t **st, info_t *info)
 {
-	int i, cnt = 0;
 	char **tmp, *t;
 
 	if (!info->opcode)
 		return;
-	tmp = malloc(sizeof(char *) * 2);
-	t = strtok(info->opcode, " \n\t");
-	tmp[0] = strdup(t);
+	tmp = malloc(sizeof(char *) * 3);
+	if (!tmp)
+	{
+		fprintf(stderr, "Error: malloc failed\n");
+		freeall(*st, info);
+		exit(EXIT_FAILURE);
+	}
+
+	t = strtok(info->opcode, " ");
+	strcpy(tmp[0], t);
 	t = strtok(NULL, " \n\t");
-	tmp[1] = strdup(t);
+	strcpy(tmp[1], t);
+	tmp[2] = NULL;
 	info->parsed = tmp;
 
 }
+void findcmd(info_t *info)
+{
+	int i, n;
+	instruction_t find[] = {
+		{"push", _push},
+		{"pall", _pall},
+		{NULL, NULL}
+	};
+
+	n = sizeof(find) / sizeof(find[0]);
+	for (i = 0; i < n; ++i)
+	{
+		if (!strcmp(info->parsed[0], find[i].opcode))
+		{
+			info->f = find[i].f;
+			return;
+		}
+	}
+
+}
+
+
