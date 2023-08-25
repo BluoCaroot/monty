@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 	{
 		info->c++;
 		parse(&st, info);
-	/*	if (!info-> parsed || !info->parsed[0] || info->parsed[0][0] == '$')
+		if (!info-> parsed || !info->parsed[0] || info->parsed[0][0] == '$')
 			continue;
 		findcmd(info);
 		if (!info->f)
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 		info->f(&st, info->c);
-		freelist(info);
+/*		freelist(info);
 */
 		printf("%s", info->opcode);
 	}
@@ -62,9 +62,9 @@ void parse(stack_t **st, info_t *info)
 	}
 
 	t = strtok(info->opcode, " ");
-	strcpy(tmp[0], t);
-	t = strtok(NULL, " \n\t");
-	strcpy(tmp[1], t);
+	tmp[0] = strdup(t);
+	t = strtok(NULL, " ");
+	tmp[1] = strdup(t);
 	tmp[2] = NULL;
 	info->parsed = tmp;
 
@@ -89,5 +89,3 @@ void findcmd(info_t *info)
 	}
 
 }
-
-

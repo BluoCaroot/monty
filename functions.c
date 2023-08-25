@@ -13,8 +13,8 @@ void _push(stack_t **st, unsigned int line_number)
 			if (!isdigit(info->parsed[1][j]))
 			{
 				fprintf(stderr, "L%d: usage: push integer\n", line_number);
-				freeall(*st, info);
-				exit(EXIT_FAILURE);
+				/*freeall(*st, info);
+				*/exit(EXIT_FAILURE);
 			}
 		}
 	}
