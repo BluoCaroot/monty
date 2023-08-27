@@ -42,7 +42,6 @@ int main(int argc, char **argv)
 */
 		printf("%s", info->opcode);
 	}
-	printf("%d\n", info->c);
 	/*freeall(st, info);
 	*/return (EXIT_SUCCESS);
 }

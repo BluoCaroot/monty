@@ -10,6 +10,11 @@ void _push(stack_t **st, unsigned int line_number)
 			j++;
 		for (; info->parsed[1][j]; ++j)
 		{
+			if (info->parsed[1][j] == '\n' && !info->parsed[1][j + 1])
+			{
+				info->parsed[1][j] = '\0';
+				break;
+			}
 			if (!isdigit(info->parsed[1][j]))
 			{
 				fprintf(stderr, "L%d: usage: push integer\n", line_number);
